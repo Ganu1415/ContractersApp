@@ -77,7 +77,7 @@ const AppSelect = <T extends string | number = string>({
   const handleClear = () => {
     // For clearable selects, parent should
     // decide how undefined is handled.
-    onChange(undefined as T);
+    onChange(undefined);
   };
 
   return (

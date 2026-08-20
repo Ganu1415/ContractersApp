@@ -36,10 +36,15 @@ const AppIconButton = ({
       }}
       style={({ pressed }) => [
         styles.base,
-        styles.variant[variant],
-        styles.size[size],
+
+        variantStyles[variant],
+
+        sizeStyles[size],
+
         isDisabled && styles.disabled,
+
         pressed && !isDisabled && styles.pressed,
+
         style,
       ]}
     >
@@ -52,7 +57,10 @@ const AppIconButton = ({
   );
 };
 
-const getIconColor = (variant: IconButtonVariant) => {
+/**
+ * Icon color based on button variant.
+ */
+const getIconColor = (variant: IconButtonVariant): string => {
   switch (variant) {
     case 'primary':
     case 'secondary':
@@ -68,66 +76,117 @@ const getIconColor = (variant: IconButtonVariant) => {
 };
 
 const styles = StyleSheet.create({
+  /**
+   * Base
+   */
   base: {
     alignItems: 'center',
+
     justifyContent: 'center',
   },
 
-  variant: {
-    primary: {
-      backgroundColor: theme.colors.primary,
-    },
-
-    secondary: {
-      backgroundColor: theme.colors.secondary,
-    },
-
-    outline: {
-      backgroundColor: theme.colors.surface,
-      borderWidth: 1,
-      borderColor: theme.colors.border,
-    },
-
-    ghost: {
-      backgroundColor: theme.colors.transparent,
-    },
-
-    danger: {
-      backgroundColor: theme.colors.error,
-    },
-
-    success: {
-      backgroundColor: theme.colors.success,
-    },
+  /**
+   * Variants
+   */
+  variantPrimary: {
+    backgroundColor: theme.colors.primary,
   },
 
-  size: {
-    small: {
-      width: 36,
-      height: 36,
-      borderRadius: theme.radius.sm,
-    },
-
-    medium: {
-      width: 44,
-      height: 44,
-      borderRadius: theme.radius.md,
-    },
-
-    large: {
-      width: 52,
-      height: 52,
-      borderRadius: theme.radius.lg,
-    },
+  variantSecondary: {
+    backgroundColor: theme.colors.secondary,
   },
 
+  variantOutline: {
+    backgroundColor: theme.colors.surface,
+
+    borderWidth: 1,
+
+    borderColor: theme.colors.border,
+  },
+
+  variantGhost: {
+    backgroundColor: theme.colors.transparent,
+  },
+
+  variantDanger: {
+    backgroundColor: theme.colors.error,
+  },
+
+  variantSuccess: {
+    backgroundColor: theme.colors.success,
+  },
+
+  /**
+   * Small
+   */
+  sizeSmall: {
+    width: 36,
+    height: 36,
+
+    borderRadius: theme.radius.sm,
+  },
+
+  /**
+   * Medium
+   */
+  sizeMedium: {
+    width: 44,
+    height: 44,
+
+    borderRadius: theme.radius.md,
+  },
+
+  /**
+   * Large
+   */
+  sizeLarge: {
+    width: 52,
+    height: 52,
+
+    borderRadius: theme.radius.lg,
+  },
+
+  /**
+   * Disabled
+   */
   disabled: {
     opacity: 0.5,
   },
 
+  /**
+   * Pressed
+   */
   pressed: {
     opacity: 0.75,
   },
 });
+
+/**
+ * Variant → Style mapping
+ */
+const variantStyles: Record<IconButtonVariant, object> = {
+  primary: styles.variantPrimary,
+
+  secondary: styles.variantSecondary,
+
+  outline: styles.variantOutline,
+
+  ghost: styles.variantGhost,
+
+  danger: styles.variantDanger,
+
+  success: styles.variantSuccess,
+};
+
+/**
+ * Size → Style mapping
+ */
+const sizeStyles: Record<IconButtonSize, object> = {
+  small: styles.sizeSmall,
+
+  medium: styles.sizeMedium,
+
+  large: styles.sizeLarge,
+};
 
 export default AppIconButton;

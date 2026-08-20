@@ -1,5 +1,9 @@
 import { ReactNode } from 'react';
-import { ViewStyle, ModalProps as RNModalProps } from 'react-native';
+import {
+  ViewStyle,
+  ModalProps as RNModalProps,
+  ModalProps,
+} from 'react-native';
 
 export type ModalSize = 'small' | 'medium' | 'large' | 'full';
 
@@ -9,6 +13,8 @@ export interface AppModalProps extends Pick<RNModalProps, 'onRequestClose'> {
   visible: boolean;
 
   onClose: () => void;
+
+  onRequestClose?: ModalProps['onRequestClose'];
 
   title?: string;
 

@@ -35,6 +35,8 @@ export type IconName =
   | 'mail'
   | 'check-circle'
   | 'alert-circle'
+  | 'share-2'
+  | 'alert-triangle'
   | 'info'
   | 'circle';
 

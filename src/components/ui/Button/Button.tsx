@@ -1,7 +1,9 @@
 import React from 'react';
+
 import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
 
 import { theme } from '../../../theme';
+
 import { AppText } from '../Text';
 
 import { AppButtonProps, ButtonSize, ButtonVariant } from './Button.types';
@@ -31,11 +33,17 @@ const AppButton = ({
       }}
       style={({ pressed }) => [
         styles.base,
-        styles.variant[variant],
-        styles.size[size],
+
+        variantStyles[variant],
+
+        sizeStyles[size],
+
         fullWidth && styles.fullWidth,
+
         isDisabled && styles.disabled,
+
         pressed && !isDisabled && styles.pressed,
+
         style,
       ]}
     >
@@ -43,7 +51,7 @@ const AppButton = ({
         <ActivityIndicator size="small" color={getLoaderColor(variant)} />
       ) : (
         <View style={styles.content}>
-          {leftIcon}
+          {leftIcon && <View style={styles.leftIcon}>{leftIcon}</View>}
 
           <AppText
             variant="bodyMedium"
@@ -53,26 +61,25 @@ const AppButton = ({
             {title}
           </AppText>
 
-          {rightIcon}
+          {rightIcon && <View style={styles.rightIcon}>{rightIcon}</View>}
         </View>
       )}
     </Pressable>
   );
 };
 
+/**
+ * Button text color
+ */
 const getTextColor = (variant: ButtonVariant) => {
   switch (variant) {
     case 'primary':
+    case 'secondary':
     case 'danger':
     case 'success':
       return 'white';
 
-    case 'secondary':
-      return 'white';
-
     case 'outline':
-      return 'primary';
-
     case 'ghost':
       return 'primary';
 
@@ -81,7 +88,10 @@ const getTextColor = (variant: ButtonVariant) => {
   }
 };
 
-const getLoaderColor = (variant: ButtonVariant) => {
+/**
+ * Button loading indicator color
+ */
+const getLoaderColor = (variant: ButtonVariant): string => {
   switch (variant) {
     case 'primary':
     case 'secondary':
@@ -99,79 +109,157 @@ const getLoaderColor = (variant: ButtonVariant) => {
 };
 
 const styles = StyleSheet.create({
+  /**
+   * Base
+   */
   base: {
     minHeight: 48,
+
     borderRadius: theme.radius.md,
+
     alignItems: 'center',
+
     justifyContent: 'center',
   },
 
-  variant: {
-    primary: {
-      backgroundColor: theme.colors.primary,
-    },
-
-    secondary: {
-      backgroundColor: theme.colors.secondary,
-    },
-
-    outline: {
-      backgroundColor: theme.colors.transparent,
-      borderWidth: 1,
-      borderColor: theme.colors.primary,
-    },
-
-    ghost: {
-      backgroundColor: theme.colors.transparent,
-    },
-
-    danger: {
-      backgroundColor: theme.colors.error,
-    },
-
-    success: {
-      backgroundColor: theme.colors.success,
-    },
+  /**
+   * Variants
+   */
+  variantPrimary: {
+    backgroundColor: theme.colors.primary,
   },
 
-  size: {
-    small: {
-      minHeight: 40,
-      paddingHorizontal: theme.spacing.md,
-    },
-
-    medium: {
-      minHeight: 48,
-      paddingHorizontal: theme.spacing.xl,
-    },
-
-    large: {
-      minHeight: 56,
-      paddingHorizontal: theme.spacing.xxl,
-    },
+  variantSecondary: {
+    backgroundColor: theme.colors.secondary,
   },
 
+  variantOutline: {
+    backgroundColor: theme.colors.transparent,
+
+    borderWidth: 1,
+
+    borderColor: theme.colors.primary,
+  },
+
+  variantGhost: {
+    backgroundColor: theme.colors.transparent,
+  },
+
+  variantDanger: {
+    backgroundColor: theme.colors.error,
+  },
+
+  variantSuccess: {
+    backgroundColor: theme.colors.success,
+  },
+
+  /**
+   * Small button
+   */
+  sizeSmall: {
+    paddingHorizontal: theme.spacing.sm,
+
+    paddingVertical: 3,
+  },
+
+  /**
+   * Medium button
+   */
+  sizeMedium: {
+    paddingHorizontal: theme.spacing.md,
+
+    paddingVertical: 5,
+  },
+
+  /**
+   * Large button
+   */
+  sizeLarge: {
+    paddingHorizontal: theme.spacing.lg,
+
+    paddingVertical: 7,
+  },
+
+  /**
+   * Button content
+   */
   content: {
     flexDirection: 'row',
+
     alignItems: 'center',
+
     justifyContent: 'center',
   },
 
+  /**
+   * Left icon
+   */
+  leftIcon: {
+    marginRight: theme.spacing.sm,
+  },
+
+  /**
+   * Right icon
+   */
+  rightIcon: {
+    marginLeft: theme.spacing.sm,
+  },
+
+  /**
+   * Title
+   */
   title: {
     textAlign: 'center',
   },
 
+  /**
+   * Full width
+   */
   fullWidth: {
     width: '100%',
   },
 
+  /**
+   * Disabled
+   */
   disabled: {
     opacity: 0.5,
   },
 
+  /**
+   * Pressed
+   */
   pressed: {
     opacity: 0.8,
   },
 });
+
+/**
+ * Variant → Style
+ */
+const variantStyles: Record<ButtonVariant, object> = {
+  primary: styles.variantPrimary,
+
+  secondary: styles.variantSecondary,
+
+  outline: styles.variantOutline,
+
+  ghost: styles.variantGhost,
+
+  danger: styles.variantDanger,
+
+  success: styles.variantSuccess,
+};
+
+/**
+ * Size → Style
+ */
+const sizeStyles: Record<ButtonSize, object> = {
+  small: styles.sizeSmall,
+
+  medium: styles.sizeMedium,
+
+  large: styles.sizeLarge,
+};
 
 export default AppButton;

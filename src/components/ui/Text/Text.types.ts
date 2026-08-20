@@ -22,8 +22,11 @@ export type TextColor =
   | 'white'
   | 'black';
 
+export type TextAlign = 'auto' | 'left' | 'right' | 'center' | 'justify';
+
 export interface AppTextProps extends RNTextProps {
   variant?: TextVariant;
   color?: TextColor;
+  align?: TextAlign;
   children: React.ReactNode;
 }

@@ -3,6 +3,7 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { theme } from '../../../theme';
+
 import { AppText } from '../Text';
 
 import { AppBadgeProps, BadgeVariant, BadgeSize } from './Badge.types';
@@ -22,10 +23,12 @@ const AppBadge = ({
       accessible
       accessibilityRole="text"
       accessibilityLabel={label}
-      style={[styles.base, styles.variant[variant], styles.size[size], style]}
+      style={[styles.base, variantStyles[variant], sizeStyles[size], style]}
     >
+      {/* Left Icon */}
       {leftIcon && <View style={styles.icon}>{leftIcon}</View>}
 
+      {/* Badge Text */}
       <AppText
         variant="caption"
         color={getTextColor(variant)}
@@ -34,11 +37,15 @@ const AppBadge = ({
         {label}
       </AppText>
 
+      {/* Right Icon */}
       {rightIcon && <View style={styles.icon}>{rightIcon}</View>}
     </View>
   );
 };
 
+/**
+ * Badge text color
+ */
 const getTextColor = (variant: BadgeVariant) => {
   switch (variant) {
     case 'success':
@@ -62,64 +69,105 @@ const getTextColor = (variant: BadgeVariant) => {
 };
 
 const styles = StyleSheet.create({
+  /**
+   * Base badge style
+   */
   base: {
     alignSelf: 'flex-start',
+
     flexDirection: 'row',
+
     alignItems: 'center',
 
     borderRadius: theme.radius.round,
   },
 
-  variant: {
-    default: {
-      backgroundColor: theme.colors.background,
-    },
-
-    primary: {
-      backgroundColor: theme.colors.primaryLight,
-    },
-
-    success: {
-      backgroundColor: theme.colors.successLight,
-    },
-
-    warning: {
-      backgroundColor: theme.colors.warningLight,
-    },
-
-    error: {
-      backgroundColor: theme.colors.errorLight,
-    },
-
-    info: {
-      backgroundColor: theme.colors.infoLight,
-    },
+  /**
+   * Variant styles
+   */
+  variantDefault: {
+    backgroundColor: theme.colors.background,
   },
 
-  size: {
-    small: {
-      paddingHorizontal: theme.spacing.sm,
-      paddingVertical: 3,
-    },
-
-    medium: {
-      paddingHorizontal: theme.spacing.md,
-      paddingVertical: 5,
-    },
-
-    large: {
-      paddingHorizontal: theme.spacing.lg,
-      paddingVertical: 7,
-    },
+  variantPrimary: {
+    backgroundColor: theme.colors.primaryLight,
   },
 
+  variantSuccess: {
+    backgroundColor: theme.colors.successLight,
+  },
+
+  variantWarning: {
+    backgroundColor: theme.colors.warningLight,
+  },
+
+  variantError: {
+    backgroundColor: theme.colors.errorLight,
+  },
+
+  variantInfo: {
+    backgroundColor: theme.colors.infoLight,
+  },
+
+  /**
+   * Size styles
+   */
+  sizeSmall: {
+    paddingHorizontal: theme.spacing.sm,
+
+    paddingVertical: 3,
+  },
+
+  sizeMedium: {
+    paddingHorizontal: theme.spacing.md,
+
+    paddingVertical: 5,
+  },
+
+  sizeLarge: {
+    paddingHorizontal: theme.spacing.lg,
+
+    paddingVertical: 7,
+  },
+
+  /**
+   * Text
+   */
   text: {
     fontWeight: '600',
   },
 
+  /**
+   * Icons
+   */
   icon: {
     marginHorizontal: 2,
   },
 });
+
+const variantStyles: Record<BadgeVariant, object> = {
+  default: styles.variantDefault,
+
+  primary: styles.variantPrimary,
+
+  success: styles.variantSuccess,
+
+  warning: styles.variantWarning,
+
+  error: styles.variantError,
+
+  info: styles.variantInfo,
+};
+
+/**
+ * Size → Style mapping
+ */
+const sizeStyles: Record<BadgeSize, object> = {
+  small: styles.sizeSmall,
+
+  medium: styles.sizeMedium,
+
+  large: styles.sizeLarge,
+};
 
 export default AppBadge;
