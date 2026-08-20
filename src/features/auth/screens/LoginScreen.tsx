@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ScrollView, View } from 'react-native';
+import { Pressable, ScrollView, View } from 'react-native';
 import { ArrowLeft, MoreVertical, Pencil, Trash2 } from 'lucide-react-native';
 
 import { AppText } from '../../../components/ui/Text';
@@ -13,6 +13,11 @@ import { AppDivider } from '../../../components/ui/Divider';
 import { theme } from '../../../theme';
 import { AppAvatar } from '../../../components/ui/Avatar';
 import { AppCheckbox } from '../../../components/ui/Checkbox';
+import { AppRadio } from '../../../components/ui/Radio';
+import { AppSwitch } from '../../../components/ui/Switch';
+import { AppSelect } from '../../../components/ui/Select';
+import { AppModal } from '../../../components/ui/Modal';
+import AppBottomSheet from '../../../components/ui/BottomSheet/BottomSheet';
 
 const LoginScreen = () => {
   const [checked, setChecked] = useState(false);
@@ -21,6 +26,65 @@ const LoginScreen = () => {
     steel: false,
     bricks: false,
   });
+  const [contractType, setContractType] = useState('turnkey');
+  const contractTypes = [
+    {
+      id: 'turnkey',
+      label: 'Turnkey',
+    },
+    {
+      id: 'labour',
+      label: 'Labour Only',
+    },
+    {
+      id: 'material_labour',
+      label: 'Material + Labour',
+    },
+  ];
+  const [enabled, setEnabled] = useState(false);
+  const projectTypes = [
+    {
+      label: 'Residential',
+      value: 'residential',
+    },
+    {
+      label: 'Commercial',
+      value: 'commercial',
+    },
+    {
+      label: 'Renovation',
+      value: 'renovation',
+    },
+  ];
+  const [visible, setVisible] = useState(false);
+  const projectActions = [
+    {
+      id: 'edit',
+      label: 'Edit Project',
+      icon: 'edit',
+    },
+    {
+      id: 'team',
+      label: 'Assign Team',
+      icon: 'users',
+    },
+    {
+      id: 'quotation',
+      label: 'View Quotation',
+      icon: 'file-text',
+    },
+    {
+      id: 'share',
+      label: 'Share Project',
+      icon: 'share',
+    },
+    {
+      id: 'delete',
+      label: 'Delete Project',
+      icon: 'trash',
+      danger: true,
+    },
+  ];
   return (
     <ScrollView style={{ padding: 24, marginBottom: 24 }}>
       <AppText variant="h1">Contractor App</AppText>
@@ -149,6 +213,158 @@ const LoginScreen = () => {
           onChange={() => {}}
           rightContent={<AppText variant="bodyMedium">Included</AppText>}
         />
+      </View>
+      {/* radio */}
+      <View>
+        <AppRadio
+          label="Turnkey"
+          selected={contractType === 'turnkey'}
+          onChange={() => setContractType('turnkey')}
+        />
+        <AppRadio
+          label="Design and Build"
+          selected={contractType === 'design-build'}
+          onChange={() => setContractType('design-build')}
+        />
+
+        {contractTypes.map(item => (
+          <AppRadio
+            key={item.id}
+            label={item.label}
+            selected={contractType === item.id}
+            onChange={() => setContractType(item.id)}
+          />
+        ))}
+      </View>
+      {/* Switch */}
+      <View>
+        <AppSwitch
+          label="Payment Reminder"
+          helperText="Send automatic reminders to clients"
+          value={enabled}
+          onChange={setEnabled}
+        />
+        <AppSwitch
+          label="Payment Reminder"
+          helperText="Send automatic reminders to clients"
+          value={enabled}
+          onChange={setEnabled}
+        />
+        <AppSwitch
+          label="Auto Generate PDF"
+          value={enabled}
+          disabled
+          onChange={() => {}}
+        />
+        <AppSwitch
+          label="Project Active"
+          value={enabled}
+          loading
+          onChange={() => {}}
+        />
+      </View>
+      {/* select */}
+      <View>
+        <AppSelect
+          label="Project Type"
+          options={projectTypes}
+          value={form.projectType}
+          onChange={value =>
+            setForm({
+              ...form,
+              projectType: value,
+            })
+          }
+        />
+      </View>
+      {/* AppBottomSheet */}
+      <View>
+        <AppBottomSheet
+          visible={visible}
+          onClose={() => setVisible(false)}
+          title="Project Actions"
+        >
+          <AppText>Select an action</AppText>
+        </AppBottomSheet>
+        {projectActions.map(action => (
+          <Pressable key={action.id} onPress={() => action.id}>
+            <AppIcon
+              name={action.icon}
+              size="medium"
+              color={action.danger ? 'error' : 'text'}
+            />
+
+            <AppText>{action.label}</AppText>
+          </Pressable>
+        ))}
+      </View>
+      {/* modal */}
+      <View>
+        <AppModal
+          visible={visible}
+          onClose={() => setVisible(false)}
+          title="Modal Title"
+          subtitle="Modal Subtitle"
+        >
+          <AppText>Modal Content</AppText>
+        </AppModal>
+        <AppModal
+          visible={visible}
+          onClose={() => false}
+          title="Delete Project"
+          subtitle="This action cannot be undone."
+          size="small"
+          footer={
+            <View
+              style={{
+                flexDirection: 'row',
+                gap: 12,
+              }}
+            >
+              <AppButton
+                title="Cancel"
+                variant="outline"
+                onPress={() => false}
+                style={{ flex: 1 }}
+              />
+
+              <AppButton
+                title="Delete"
+                variant="danger"
+                onPress={e => {}}
+                style={{ flex: 1 }}
+              />
+            </View>
+          }
+        >
+          <AppText>Are you sure you want to delete this project?</AppText>
+        </AppModal>
+        <AppModal
+          visible={visible}
+          onClose={() => setVisible(false)}
+          title="Project Actions"
+          position="bottom"
+        >
+          <AppButton title="Edit Project" onPress={() => {}} />
+
+          <AppButton title="Duplicate Project" onPress={() => {}} />
+
+          <AppButton
+            title="Delete Project"
+            variant="danger"
+            onPress={() => {}}
+          />
+        </AppModal>
+        <AppModal
+          visible={visible}
+          onClose={() => {}}
+          title="Saving Quotation"
+          loading
+          closeOnBackdropPress={false}
+          closeOnBackButton={false}
+        >
+          <AppText>Please wait...</AppText>
+        </AppModal>
       </View>
       {/* //iconbutton */}
       <View>
