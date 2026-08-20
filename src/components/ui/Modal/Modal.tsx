@@ -103,7 +103,6 @@ const AppModal = ({
         {/* Modal */}
         <View
           accessible
-          accessibilityRole="dialog"
           accessibilityLabel={accessibilityLabel ?? title ?? 'Dialog'}
           style={[
             styles.modal,

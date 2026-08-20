@@ -20,6 +20,9 @@ import { AppModal } from '../../../components/ui/Modal';
 import AppBottomSheet from '../../../components/ui/BottomSheet/BottomSheet';
 import { AppToast } from '../../../components/ui/Toast';
 import { AppAlert } from '../../../components/ui/Alert';
+import FormField from '../../../components/form/FormField/FormField';
+import { FormInput } from '../../../components/form/FormInput';
+import FormSelect from '@ContractorApp/src/components/form/FormSelect/FormSelect';
 
 const LoginScreen = () => {
   const [checked, setChecked] = useState(false);
@@ -511,6 +514,47 @@ const LoginScreen = () => {
 
         <AppCard variant="filled">...</AppCard>
       </View>
+      {/* FormField */}
+      <FormField
+        label="Project Name"
+        required
+        helperText="Enter the official project name"
+      >
+        <AppInput
+          placeholder="Enter project name"
+          value={'projectName'}
+          onChangeText={e => {}}
+        />
+      </FormField>
+      <FormInput
+        label="Project Name "
+        required
+        placeholder="Enter project name"
+        value={'projectName input'}
+        onChangeText={e => {}}
+        helperText="Enter the official project name"
+      />
+      <FormSelect
+        label="Project Type"
+        required
+        placeholder="Select project type"
+        value={'projectType'}
+        onChange={e => {}}
+        options={[
+          {
+            label: 'Residential',
+            value: 'residential',
+          },
+          {
+            label: 'Commercial',
+            value: 'commercial',
+          },
+          {
+            label: 'Renovation',
+            value: 'renovation',
+          },
+        ]}
+      />
     </ScrollView>
   );
 };

@@ -89,7 +89,6 @@ const AppBottomSheet = ({
         {/* Bottom Sheet */}
         <View
           accessible
-          accessibilityRole="dialog"
           accessibilityLabel={accessibilityLabel ?? title ?? 'Bottom sheet'}
           style={[
             styles.sheet,
