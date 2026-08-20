@@ -1,9 +1,15 @@
 import React from 'react';
+
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { theme } from '../../../theme';
 
-import { AppCardProps, CardPadding, CardVariant } from './Card.types';
+import {
+  AppCardProps,
+  CardPadding,
+  CardRadius,
+  CardVariant,
+} from './Card.types';
 
 const AppCard = ({
   children,
@@ -19,107 +25,194 @@ const AppCard = ({
 }: AppCardProps) => {
   const isPressable = Boolean(onPress);
 
-  const Container = isPressable ? Pressable : View;
+  /**
+   * Common card styles
+   */
+  const cardStyles = [
+    styles.base,
 
+    variantStyles[variant],
+
+    paddingStyles[padding],
+
+    radiusStyles[radius],
+
+    fullWidth && styles.fullWidth,
+
+    disabled && styles.disabled,
+
+    style,
+  ];
+
+  /**
+   * Non-pressable Card
+   */
+  if (!isPressable) {
+    return (
+      <View {...rest} style={cardStyles}>
+        <View style={contentStyle}>{children}</View>
+      </View>
+    );
+  }
+
+  /**
+   * Pressable Card
+   */
   return (
-    <Container
-      {...(isPressable ? rest : {})}
-      {...(isPressable ? { onPress } : {})}
+    <Pressable
+      {...rest}
+      onPress={onPress}
       disabled={disabled}
-      style={({ pressed }: any) => [
-        styles.base,
-        styles.variant[variant],
-        styles.padding[padding],
-        styles.radius[radius],
-        fullWidth && styles.fullWidth,
-        disabled && styles.disabled,
-        pressed && styles.pressed,
-        style,
+      accessibilityRole="button"
+      accessibilityState={{
+        disabled,
+      }}
+      style={({ pressed }) => [
+        ...cardStyles,
+
+        pressed && !disabled && styles.pressed,
       ]}
     >
       <View style={contentStyle}>{children}</View>
-    </Container>
+    </Pressable>
   );
 };
 
 const styles = StyleSheet.create({
+  /**
+   * Base
+   */
   base: {
     overflow: 'hidden',
   },
 
-  variant: {
-    default: {
-      backgroundColor: theme.colors.surface,
-    },
-
-    outlined: {
-      backgroundColor: theme.colors.surface,
-      borderWidth: 1,
-      borderColor: theme.colors.border,
-    },
-
-    elevated: {
-      backgroundColor: theme.colors.surface,
-
-      shadowColor: theme.colors.black,
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.08,
-      shadowRadius: 6,
-
-      elevation: 3,
-    },
-
-    filled: {
-      backgroundColor: theme.colors.background,
-    },
+  /**
+   * Variants
+   */
+  variantDefault: {
+    backgroundColor: theme.colors.surface,
   },
 
-  padding: {
-    none: {
-      padding: 0,
-    },
+  variantOutlined: {
+    backgroundColor: theme.colors.surface,
 
-    small: {
-      padding: theme.spacing.md,
-    },
+    borderWidth: 1,
 
-    medium: {
-      padding: theme.spacing.lg,
-    },
-
-    large: {
-      padding: theme.spacing.xxl,
-    },
+    borderColor: theme.colors.border,
   },
 
-  radius: {
-    small: {
-      borderRadius: theme.radius.sm,
+  variantElevated: {
+    backgroundColor: theme.colors.surface,
+
+    shadowColor: theme.colors.black,
+
+    shadowOffset: {
+      width: 0,
+      height: 2,
     },
 
-    medium: {
-      borderRadius: theme.radius.md,
-    },
+    shadowOpacity: 0.08,
 
-    large: {
-      borderRadius: theme.radius.lg,
-    },
+    shadowRadius: 6,
+
+    elevation: 3,
   },
 
+  variantFilled: {
+    backgroundColor: theme.colors.background,
+  },
+
+  /**
+   * Padding
+   */
+  paddingNone: {
+    padding: 0,
+  },
+
+  paddingSmall: {
+    padding: theme.spacing.md,
+  },
+
+  paddingMedium: {
+    padding: theme.spacing.lg,
+  },
+
+  paddingLarge: {
+    padding: theme.spacing.xxl,
+  },
+
+  /**
+   * Radius
+   */
+  radiusSmall: {
+    borderRadius: theme.radius.sm,
+  },
+
+  radiusMedium: {
+    borderRadius: theme.radius.md,
+  },
+
+  radiusLarge: {
+    borderRadius: theme.radius.lg,
+  },
+
+  /**
+   * Full width
+   */
   fullWidth: {
     width: '100%',
   },
 
+  /**
+   * Disabled
+   */
   disabled: {
     opacity: 0.5,
   },
 
+  /**
+   * Pressed
+   */
   pressed: {
     opacity: 0.85,
   },
 });
+
+/**
+ * Variant → Style
+ */
+const variantStyles: Record<CardVariant, object> = {
+  default: styles.variantDefault,
+
+  outlined: styles.variantOutlined,
+
+  elevated: styles.variantElevated,
+
+  filled: styles.variantFilled,
+};
+
+/**
+ * Padding → Style
+ */
+const paddingStyles: Record<CardPadding, object> = {
+  none: styles.paddingNone,
+
+  small: styles.paddingSmall,
+
+  medium: styles.paddingMedium,
+
+  large: styles.paddingLarge,
+};
+
+/**
+ * Radius → Style
+ */
+const radiusStyles: Record<CardRadius, object> = {
+  small: styles.radiusSmall,
+
+  medium: styles.radiusMedium,
+
+  large: styles.radiusLarge,
+};
 
 export default AppCard;

@@ -2,6 +2,7 @@ import React from 'react';
 
 import {
   AlertCircle,
+  AlertTriangle,
   ArrowDown,
   ArrowLeft,
   ArrowRight,
@@ -32,6 +33,7 @@ import {
   Plus,
   Search,
   Settings,
+  Share2,
   Trash2,
   Upload,
   User,
@@ -43,6 +45,13 @@ import { theme } from '../../../theme';
 
 import { AppIconProps, IconColor, IconName, IconSize } from './Icon.types';
 
+/**
+ * Central Icon Registry
+ *
+ * IMPORTANT:
+ * All icons used in the application
+ * should come through AppIcon.
+ */
 const iconMap: Record<IconName, React.ComponentType<any>> = {
   'arrow-left': ArrowLeft,
   'arrow-right': ArrowRight,
@@ -92,8 +101,10 @@ const iconMap: Record<IconName, React.ComponentType<any>> = {
 
   'check-circle': CheckCircle,
   'alert-circle': AlertCircle,
+  'alert-triangle': AlertTriangle,
   info: Info,
   circle: Circle,
+  'share-2': Share2,
 };
 
 const sizeMap: Record<IconSize, number> = {
@@ -103,7 +114,7 @@ const sizeMap: Record<IconSize, number> = {
   xlarge: 32,
 };
 
-const getColor = (color: IconColor | string) => {
+const getColor = (color: IconColor | string): string => {
   if (color.startsWith('#')) {
     return color;
   }
@@ -120,7 +131,7 @@ const getColor = (color: IconColor | string) => {
     black: theme.colors.black,
   };
 
-  return colorMap[color as IconColor];
+  return colorMap[color as IconColor] ?? theme.colors.text;
 };
 
 const AppIcon = ({
@@ -133,13 +144,19 @@ const AppIcon = ({
 }: AppIconProps) => {
   const IconComponent = iconMap[name];
 
+  if (!IconComponent) {
+    return null;
+  }
+
   const iconSize = typeof size === 'number' ? size : sizeMap[size];
+
+  const iconColor = getColor(color);
 
   return (
     <IconComponent
       testID={testID}
       size={iconSize}
-      color={getColor(color)}
+      color={iconColor}
       strokeWidth={strokeWidth}
       accessible={Boolean(accessibilityLabel)}
       accessibilityRole="image"

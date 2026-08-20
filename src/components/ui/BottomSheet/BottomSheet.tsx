@@ -13,9 +13,15 @@ import { theme } from '../../../theme';
 import { AppIcon } from '../Icon';
 import { AppText } from '../Text';
 
-import { AppBottomSheetProps } from './BottomSheet.types';
+import { AppBottomSheetProps, BottomSheetHeight } from './BottomSheet.types';
 
-const heightMap = {
+/**
+ * Bottom sheet height configuration.
+ *
+ * `auto` lets the sheet size itself based
+ * on its content.
+ */
+const heightMap: Record<BottomSheetHeight, string | undefined> = {
   auto: undefined,
   small: '30%',
   medium: '50%',
@@ -40,8 +46,22 @@ const AppBottomSheet = ({
   testID,
   accessibilityLabel,
 }: AppBottomSheetProps) => {
+  /**
+   * Handle Android back button.
+   */
   const handleClose = () => {
-    if (!closeOnBackButton) {
+    if (loading || !closeOnBackButton) {
+      return;
+    }
+
+    onClose();
+  };
+
+  /**
+   * Handle backdrop press.
+   */
+  const handleBackdropPress = () => {
+    if (loading || !closeOnBackdropPress) {
       return;
     }
 
@@ -57,35 +77,36 @@ const AppBottomSheet = ({
       statusBarTranslucent
     >
       <View testID={testID} style={styles.overlay}>
+        {/* Backdrop */}
         <Pressable
           style={StyleSheet.absoluteFill}
-          onPress={() => {
-            if (closeOnBackdropPress) {
-              onClose();
-            }
-          }}
+          onPress={handleBackdropPress}
+          disabled={loading}
+          accessibilityRole="button"
+          accessibilityLabel="Close bottom sheet"
         />
 
+        {/* Bottom Sheet */}
         <View
           accessible
           accessibilityRole="dialog"
           accessibilityLabel={accessibilityLabel ?? title ?? 'Bottom sheet'}
           style={[
             styles.sheet,
-
             {
               maxHeight: heightMap[height],
             },
-
             style,
           ]}
         >
+          {/* Handle */}
           {showHandle && (
             <View style={styles.handleContainer}>
               <View style={styles.handle} />
             </View>
           )}
 
+          {/* Header */}
           {(title || subtitle || showCloseButton) && (
             <View style={styles.header}>
               <View style={styles.titleContainer}>
@@ -102,9 +123,11 @@ const AppBottomSheet = ({
                 )}
               </View>
 
+              {/* Close */}
               {showCloseButton && (
                 <Pressable
                   onPress={onClose}
+                  disabled={loading}
                   hitSlop={10}
                   accessibilityRole="button"
                   accessibilityLabel="Close"
@@ -116,12 +139,19 @@ const AppBottomSheet = ({
             </View>
           )}
 
+          {/* Content */}
           <View style={styles.content}>{children}</View>
 
+          {/* Footer */}
           {footer && <View style={styles.footer}>{footer}</View>}
 
+          {/* Loading Overlay */}
           {loading && (
-            <View style={styles.loadingOverlay}>
+            <View
+              style={styles.loadingOverlay}
+              accessibilityRole="progressbar"
+              accessibilityLabel="Loading"
+            >
               <ActivityIndicator size="large" color={theme.colors.primary} />
             </View>
           )}
@@ -132,6 +162,9 @@ const AppBottomSheet = ({
 };
 
 const styles = StyleSheet.create({
+  /**
+   * Full screen overlay
+   */
   overlay: {
     flex: 1,
 
@@ -140,6 +173,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.45)',
   },
 
+  /**
+   * Sheet container
+   */
   sheet: {
     width: '100%',
 
@@ -152,10 +188,14 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
 
+  /**
+   * Drag handle
+   */
   handleContainer: {
     alignItems: 'center',
 
     paddingTop: theme.spacing.sm,
+
     paddingBottom: theme.spacing.xs,
   },
 
@@ -168,8 +208,12 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.border,
   },
 
+  /**
+   * Header
+   */
   header: {
     flexDirection: 'row',
+
     alignItems: 'flex-start',
 
     paddingHorizontal: theme.spacing.lg,
@@ -191,20 +235,30 @@ const styles = StyleSheet.create({
     marginTop: theme.spacing.xs,
   },
 
+  /**
+   * Close button
+   */
   closeButton: {
     width: 36,
     height: 36,
 
     alignItems: 'center',
+
     justifyContent: 'center',
 
     marginLeft: theme.spacing.sm,
   },
 
+  /**
+   * Main content
+   */
   content: {
     padding: theme.spacing.lg,
   },
 
+  /**
+   * Footer
+   */
   footer: {
     padding: theme.spacing.lg,
 
@@ -213,15 +267,23 @@ const styles = StyleSheet.create({
     borderTopColor: theme.colors.border,
   },
 
+  /**
+   * Loading overlay
+   */
   loadingOverlay: {
-    ...StyleSheet.absoluteFillObject,
+    position: 'absolute',
+
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
 
     zIndex: 10,
 
     alignItems: 'center',
     justifyContent: 'center',
 
-    backgroundColor: 'rgba(255,255,255,0.65)',
+    backgroundColor: 'rgba(255, 255, 255, 0.65)',
   },
 });
 

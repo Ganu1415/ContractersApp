@@ -1,3 +1,6 @@
 export { default as AppBottomSheet } from './BottomSheet';
 
-export type { AppBottomSheetProps } from './BottomSheet.types';
+export type {
+  AppBottomSheetProps,
+  BottomSheetHeight,
+} from './BottomSheet.types';

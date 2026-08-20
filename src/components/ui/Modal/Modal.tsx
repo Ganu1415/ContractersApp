@@ -15,11 +15,25 @@ import { AppText } from '../Text';
 
 import { AppModalProps, ModalPosition, ModalSize } from './Modal.types';
 
-const sizeMap: Record<ModalSize, string> = {
-  small: '70%',
-  medium: '85%',
-  large: '92%',
-  full: '100%',
+/**
+ * Modal width mapping
+ */
+const sizeStyles: Record<ModalSize, object> = {
+  small: {
+    width: '70%',
+  },
+
+  medium: {
+    width: '85%',
+  },
+
+  large: {
+    width: '92%',
+  },
+
+  full: {
+    width: '100%',
+  },
 };
 
 const AppModal = ({
@@ -40,16 +54,24 @@ const AppModal = ({
   accessibilityLabel,
   onRequestClose,
 }: AppModalProps) => {
-  const handleRequestClose = () => {
+  const isBottom = position === 'bottom';
+
+  /**
+   * Android back button
+   */
+  const handleRequestClose = (event: any) => {
     if (!closeOnBackButton) {
       return;
     }
 
-    onRequestClose?.();
+    onRequestClose?.(event);
 
     onClose();
   };
 
+  /**
+   * Backdrop press
+   */
   const handleBackdropPress = () => {
     if (!closeOnBackdropPress) {
       return;
@@ -57,8 +79,6 @@ const AppModal = ({
 
     onClose();
   };
-
-  const isBottom = position === 'bottom';
 
   return (
     <Modal
@@ -68,37 +88,43 @@ const AppModal = ({
       onRequestClose={handleRequestClose}
       statusBarTranslucent
     >
-      <View testID={testID} style={styles.overlay}>
+      <View
+        testID={testID}
+        style={[styles.overlay, isBottom && styles.bottomOverlay]}
+      >
+        {/* Backdrop */}
         <Pressable
           style={StyleSheet.absoluteFill}
           onPress={handleBackdropPress}
+          accessibilityRole="button"
           accessibilityLabel="Close modal"
         />
 
+        {/* Modal */}
         <View
           accessible
-          accessibilityRole="alert"
+          accessibilityRole="dialog"
           accessibilityLabel={accessibilityLabel ?? title ?? 'Dialog'}
           style={[
             styles.modal,
 
             isBottom ? styles.bottomModal : styles.centerModal,
 
-            {
-              width: sizeMap[size],
-            },
+            sizeStyles[size],
 
             size === 'full' && styles.fullModal,
 
             style,
           ]}
         >
+          {/* Loading */}
           {loading && (
             <View style={styles.loadingOverlay}>
               <ActivityIndicator size="large" color={theme.colors.primary} />
             </View>
           )}
 
+          {/* Header */}
           {(title || subtitle || showCloseButton) && (
             <View style={styles.header}>
               <View style={styles.titleContainer}>
@@ -129,8 +155,10 @@ const AppModal = ({
             </View>
           )}
 
+          {/* Content */}
           <View style={styles.content}>{children}</View>
 
+          {/* Footer */}
           {footer && <View style={styles.footer}>{footer}</View>}
         </View>
       </View>
@@ -139,15 +167,29 @@ const AppModal = ({
 };
 
 const styles = StyleSheet.create({
+  /**
+   * Overlay
+   */
   overlay: {
     flex: 1,
 
     alignItems: 'center',
+
     justifyContent: 'center',
 
     backgroundColor: 'rgba(0, 0, 0, 0.45)',
   },
 
+  /**
+   * Bottom overlay
+   */
+  bottomOverlay: {
+    justifyContent: 'flex-end',
+  },
+
+  /**
+   * Base modal
+   */
   modal: {
     maxHeight: '90%',
 
@@ -158,10 +200,16 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
 
+  /**
+   * Center modal
+   */
   centerModal: {
     alignSelf: 'center',
   },
 
+  /**
+   * Bottom modal
+   */
   bottomModal: {
     position: 'absolute',
 
@@ -172,6 +220,7 @@ const styles = StyleSheet.create({
     width: '100%',
 
     borderBottomLeftRadius: 0,
+
     borderBottomRightRadius: 0,
 
     borderTopLeftRadius: theme.radius.xl,
@@ -179,15 +228,23 @@ const styles = StyleSheet.create({
     borderTopRightRadius: theme.radius.xl,
   },
 
+  /**
+   * Full-screen modal
+   */
   fullModal: {
     height: '100%',
+
     maxHeight: '100%',
 
     borderRadius: 0,
   },
 
+  /**
+   * Header
+   */
   header: {
     flexDirection: 'row',
+
     alignItems: 'flex-start',
 
     paddingHorizontal: theme.spacing.lg,
@@ -201,28 +258,45 @@ const styles = StyleSheet.create({
     borderBottomColor: theme.colors.border,
   },
 
+  /**
+   * Title
+   */
   titleContainer: {
     flex: 1,
   },
 
+  /**
+   * Subtitle
+   */
   subtitle: {
     marginTop: theme.spacing.xs,
   },
 
+  /**
+   * Close button
+   */
   closeButton: {
     width: 36,
+
     height: 36,
 
     alignItems: 'center',
+
     justifyContent: 'center',
 
     marginLeft: theme.spacing.sm,
   },
 
+  /**
+   * Content
+   */
   content: {
     padding: theme.spacing.lg,
   },
 
+  /**
+   * Footer
+   */
   footer: {
     padding: theme.spacing.lg,
 
@@ -231,12 +305,20 @@ const styles = StyleSheet.create({
     borderTopColor: theme.colors.border,
   },
 
+  /**
+   * Loading overlay
+   *
+   * IMPORTANT:
+   * Do not use absoluteFillObject.
+   * Latest RN typings support absoluteFill.
+   */
   loadingOverlay: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
 
     zIndex: 10,
 
     alignItems: 'center',
+
     justifyContent: 'center',
 
     backgroundColor: 'rgba(255,255,255,0.65)',

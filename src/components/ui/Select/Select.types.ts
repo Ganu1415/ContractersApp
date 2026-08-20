@@ -13,7 +13,7 @@ export interface AppSelectProps<T = string> {
 
   options: SelectOption<T>[];
 
-  onChange: (value: T) => void;
+  onChange: (value: T | undefined) => void;
 
   label?: string;
 

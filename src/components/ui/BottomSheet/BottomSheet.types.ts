@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import { ViewStyle } from 'react-native';
 
+export type BottomSheetHeight = 'auto' | 'small' | 'medium' | 'large' | 'full';
 export interface AppBottomSheetProps {
   visible: boolean;
 
@@ -20,7 +21,7 @@ export interface AppBottomSheetProps {
 
   closeOnBackButton?: boolean;
 
-  height?: 'auto' | 'small' | 'medium' | 'large' | 'full';
+  height?: BottomSheetHeight;
 
   footer?: ReactNode;
 

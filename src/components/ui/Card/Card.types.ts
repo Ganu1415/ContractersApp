@@ -4,6 +4,7 @@ import { PressableProps, ViewStyle } from 'react-native';
 export type CardVariant = 'default' | 'outlined' | 'elevated' | 'filled';
 
 export type CardPadding = 'none' | 'small' | 'medium' | 'large';
+export type CardRadius = 'small' | 'medium' | 'large';
 
 export interface AppCardProps extends Omit<PressableProps, 'style'> {
   children: ReactNode;
@@ -11,7 +12,7 @@ export interface AppCardProps extends Omit<PressableProps, 'style'> {
   variant?: CardVariant;
   padding?: CardPadding;
 
-  radius?: 'small' | 'medium' | 'large';
+  radius?: CardRadius;
 
   fullWidth?: boolean;
 

@@ -8,7 +8,7 @@ import { AppInput } from '../../../components/ui/Input';
 import { AppCard } from '../../../components/ui/Card';
 import { AppBadge } from '../../../components/ui/Badge';
 import { AppIconButton } from '../../../components/ui/IconButton';
-import { AppIcon } from '../../../components/ui/Icon';
+import { AppIcon, IconName } from '../../../components/ui/Icon';
 import { AppDivider } from '../../../components/ui/Divider';
 import { theme } from '../../../theme';
 import { AppAvatar } from '../../../components/ui/Avatar';
@@ -18,6 +18,8 @@ import { AppSwitch } from '../../../components/ui/Switch';
 import { AppSelect } from '../../../components/ui/Select';
 import { AppModal } from '../../../components/ui/Modal';
 import AppBottomSheet from '../../../components/ui/BottomSheet/BottomSheet';
+import { AppToast } from '../../../components/ui/Toast';
+import { AppAlert } from '../../../components/ui/Alert';
 
 const LoginScreen = () => {
   const [checked, setChecked] = useState(false);
@@ -57,7 +59,13 @@ const LoginScreen = () => {
     },
   ];
   const [visible, setVisible] = useState(false);
-  const projectActions = [
+  interface ProjectAction {
+    id: string;
+    label: string;
+    icon: IconName;
+    danger?: boolean;
+  }
+  const projectActions: ProjectAction[] = [
     {
       id: 'edit',
       label: 'Edit Project',
@@ -71,20 +79,21 @@ const LoginScreen = () => {
     {
       id: 'quotation',
       label: 'View Quotation',
-      icon: 'file-text',
+      icon: 'file',
     },
     {
       id: 'share',
       label: 'Share Project',
-      icon: 'share',
+      icon: 'share-2',
     },
     {
       id: 'delete',
       label: 'Delete Project',
-      icon: 'trash',
+      icon: 'delete',
       danger: true,
     },
   ];
+  const [toastVisible, setToastVisible] = useState(false);
   return (
     <ScrollView style={{ padding: 24, marginBottom: 24 }}>
       <AppText variant="h1">Contractor App</AppText>
@@ -96,7 +105,7 @@ const LoginScreen = () => {
         variant="outline"
         style={{ marginTop: 24, backgroundColor: 'white' }}
         onPress={() => {
-          console.log('Login pressed');
+          () => setToastVisible(true);
         }}
       />
       <AppButton title="Create Project" variant="primary" />
@@ -277,6 +286,14 @@ const LoginScreen = () => {
           }
         />
       </View>
+      {/* Alert */}
+      <AppAlert
+        visible={toastVisible}
+        title="Login Failed"
+        message="Invalid username or password"
+        type="error"
+        onConfirm={() => setToastVisible(false)}
+      />
       {/* AppBottomSheet */}
       <View>
         <AppBottomSheet
@@ -288,16 +305,23 @@ const LoginScreen = () => {
         </AppBottomSheet>
         {projectActions.map(action => (
           <Pressable key={action.id} onPress={() => action.id}>
-            <AppIcon
-              name={action.icon}
+            {/* <AppIcon
+              name="{action.icon}"
               size="medium"
               color={action.danger ? 'error' : 'text'}
-            />
+            /> */}
 
             <AppText>{action.label}</AppText>
           </Pressable>
         ))}
       </View>
+      {/* Tost */}
+      <AppToast
+        visible={toastVisible}
+        message="Project created successfully"
+        type="success"
+        onHide={() => setToastVisible(false)}
+      />
       {/* modal */}
       <View>
         <AppModal

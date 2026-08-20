@@ -19,21 +19,25 @@ const AppDivider = ({
   return (
     <View
       testID={testID}
-      accessibilityRole="none"
+      accessible={false}
       style={[
-        styles.base,
-
         isHorizontal ? styles.horizontal : styles.vertical,
+
+        isHorizontal
+          ? horizontalSpacingStyles[spacing]
+          : verticalSpacingStyles[spacing],
 
         {
           backgroundColor: color,
 
-          ...(isHorizontal ? { height: thickness } : { width: thickness }),
+          ...(isHorizontal
+            ? {
+                height: thickness,
+              }
+            : {
+                width: thickness,
+              }),
         },
-
-        isHorizontal
-          ? styles.horizontalSpacing[spacing]
-          : styles.verticalSpacing[spacing],
 
         style,
       ]}
@@ -41,9 +45,10 @@ const AppDivider = ({
   );
 };
 
+/**
+ * Base orientation styles
+ */
 const styles = StyleSheet.create({
-  base: {},
-
   horizontal: {
     width: '100%',
   },
@@ -52,37 +57,65 @@ const styles = StyleSheet.create({
     height: '100%',
   },
 
-  horizontalSpacing: {
-    none: {},
+  /**
+   * Horizontal spacing
+   */
+  horizontalSpacingNone: {},
 
-    small: {
-      marginVertical: theme.spacing.sm,
-    },
-
-    medium: {
-      marginVertical: theme.spacing.md,
-    },
-
-    large: {
-      marginVertical: theme.spacing.xl,
-    },
+  horizontalSpacingSmall: {
+    marginVertical: theme.spacing.sm,
   },
 
-  verticalSpacing: {
-    none: {},
+  horizontalSpacingMedium: {
+    marginVertical: theme.spacing.md,
+  },
 
-    small: {
-      marginHorizontal: theme.spacing.sm,
-    },
+  horizontalSpacingLarge: {
+    marginVertical: theme.spacing.xl,
+  },
 
-    medium: {
-      marginHorizontal: theme.spacing.md,
-    },
+  /**
+   * Vertical spacing
+   */
+  verticalSpacingNone: {},
 
-    large: {
-      marginHorizontal: theme.spacing.xl,
-    },
+  verticalSpacingSmall: {
+    marginHorizontal: theme.spacing.sm,
+  },
+
+  verticalSpacingMedium: {
+    marginHorizontal: theme.spacing.md,
+  },
+
+  verticalSpacingLarge: {
+    marginHorizontal: theme.spacing.xl,
   },
 });
+
+/**
+ * Horizontal spacing mapping
+ */
+const horizontalSpacingStyles = {
+  none: styles.horizontalSpacingNone,
+
+  small: styles.horizontalSpacingSmall,
+
+  medium: styles.horizontalSpacingMedium,
+
+  large: styles.horizontalSpacingLarge,
+};
+
+/**
+ * Vertical spacing mapping
+ */
+const verticalSpacingStyles = {
+  none: styles.verticalSpacingNone,
+
+  small: styles.verticalSpacingSmall,
+
+  medium: styles.verticalSpacingMedium,
+
+  large: styles.verticalSpacingLarge,
+};
 
 export default AppDivider;
